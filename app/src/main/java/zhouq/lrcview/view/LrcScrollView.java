@@ -57,6 +57,7 @@ public class LrcScrollView extends View {
      * 其他歌词的默认字体颜色*
      */
     private static final int DEFAULT_COLOR_FOR_OTHER_LRC = Color.WHITE;
+    private float mCurFraction;
 
     public void setCurSizeForOtherLine(float mCurSizeForOtherLrc) {
         this.mCurSizeForOtherLrc = mCurSizeForOtherLrc;
@@ -120,8 +121,8 @@ public class LrcScrollView extends View {
      */
     private static final int DURATION_FOR_ACTION_UP = 400;
     private int mTotleDrawRow;
-    private int mCurRow;
-    private int mLastRow;
+    private int mCurRow = -1;
+    private int mLastRow = -1;
     private final int mTouchSlop;
 
     public void setOnSeekToListener(OnSeekToListener onSeekToListener) {
@@ -206,9 +207,9 @@ public class LrcScrollView extends View {
                 if (hasHighlightScroll) {
                     continue;
                 }
-
+                //因为有缩放效果，所有需要动态设置歌词的字体大小
                 float textSize = mCurSizeForOtherLrc +
-                        (mCurSizeForHightLightLrc - mCurSizeForOtherLrc);
+                        (mCurSizeForHightLightLrc - mCurSizeForOtherLrc)*mCurFraction;
                 mPaintForHighLightLrc.setTextSize(textSize);
 
                 String text = mLrcRows.get(i).getContent();//获取到高亮歌词
@@ -223,8 +224,8 @@ public class LrcScrollView extends View {
                 }
             } else {
                 if (i == mLastRow) {//画高亮歌词的上一句
-                    //动态设置歌词的字体大小
-                    float textSize = mCurSizeForHightLightLrc - (mCurSizeForHightLightLrc - mCurSizeForOtherLrc);
+                    //因为有缩放效果，所有需要动态设置歌词的字体大小
+                    float textSize = mCurSizeForHightLightLrc - (mCurSizeForHightLightLrc - mCurSizeForOtherLrc)*mCurFraction;
                     mPaintForOtherLrc.setTextSize(textSize);
                 } else {//画其他的歌词
                     mPaintForOtherLrc.setTextSize(mCurSizeForOtherLrc);
@@ -284,6 +285,7 @@ public class LrcScrollView extends View {
                         canDrag = true;
                         mIsDrawTimeLine = true;
                         mScroller.forceFinished(true);
+                        mCurFraction = 1;
                     }
                     lastY = event.getRawY();
                 }
@@ -348,7 +350,7 @@ public class LrcScrollView extends View {
         if (mCurRow != currentRow) {
             mLastRow = mCurRow;
             mCurRow = currentRow;
-            Log.d("LrcView", "mCurRow=i=" + mCurRow);
+            Log.d("LrcView-wang", "mCurRow=i=" + mCurRow);
             if (fromSeekBarByUser) {
                 if (!mScroller.isFinished()) {
                     mScroller.forceFinished(true);
@@ -383,7 +385,8 @@ public class LrcScrollView extends View {
                 if (oldY != y && !canDrag) {
                     scrollTo(getScrollX(), y);
                 }
-
+                mCurFraction = mScroller.timePassed()*3f/DURATION_FOR_LRC_SCROLL;
+                mCurFraction = Math.min(mCurFraction, 1F);
                 invalidate();
             }
         }

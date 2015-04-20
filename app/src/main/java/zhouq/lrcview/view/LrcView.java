@@ -84,7 +84,7 @@ public class LrcView extends FrameLayout {
         otherLrcView.setOnSeekToListener(onSeekToListener);
     }
 
-    private int mCurIndex;
+    private int mCurIndex = -1;
 
     public void seekTo(int progress, boolean fromSeekBar, boolean fromSeekBarByUser) {
         if (mLrcRows == null || mLrcRows.size() == 0) {
