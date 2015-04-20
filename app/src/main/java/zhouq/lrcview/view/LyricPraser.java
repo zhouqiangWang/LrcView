@@ -128,6 +128,7 @@ public class LyricPraser {
         int lastIndexOfRightBracket = lrcLine.lastIndexOf("]");
         //歌词内容
         String content = lrcLine.substring(lastIndexOfRightBracket + 1, lrcLine.length());
+        content = content.trim();
         //截取出歌词时间，并将"[" 和"]" 替换为"-"   [offset:0]
         // -03:33.02--00:36.37-
         String times = lrcLine.substring(0, lastIndexOfRightBracket + 1).replace("[", "-").replace("]", "-");

@@ -43,6 +43,16 @@ public class PlayerActivity extends Activity {
         initView();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        updateHandler.removeCallbacksAndMessages(null);
+        mPlayer.stop();
+        mPlayer.release();
+        mPlayer = null;
+        lrcView.reset();
+    }
+
     private void initView() {
         lrcView = (LrcView) findViewById(R.id.lrcview);
         lrcView.setLrcContent(duratoin, path);
@@ -66,7 +76,7 @@ public class PlayerActivity extends Activity {
     private LrcScrollView.OnSeekToListener lrcViewSeekToListener = new LrcScrollView.OnSeekToListener() {
         @Override
         public void onSeekTo(int progress) {
-            seekBar.setProgress(progress);
+            mPlayer.seekTo(progress);
         }
     };
 
@@ -84,6 +94,7 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
+            mPlayer.seekTo(seekBar.getProgress());
             updateHandler.sendEmptyMessageDelayed(UPDATE_SEEKBAR, 100);
         }
     };

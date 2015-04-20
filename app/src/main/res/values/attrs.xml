@@ -2,5 +2,9 @@
 <resources>
     <declare-styleable name="LrcView">
         <attr name="highlight_scroll" format="boolean"/>
+        <attr name="highlight_text_size" format="dimension"/>
+        <attr name="otherline_text_size" format="dimension"/>
+        <attr name="highlight_text_color" format="color|integer"/>
+        <attr name="otherline_text_color" format="color|integer"/>
     </declare-styleable>
 </resources>

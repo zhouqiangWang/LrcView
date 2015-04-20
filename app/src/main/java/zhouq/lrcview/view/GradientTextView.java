@@ -18,17 +18,18 @@ public class GradientTextView extends TextView {
     private LinearGradient mLinearGradient;
     private Matrix mGradientMatrix;
     private Paint mPaint;
-    private int mViewWidth = 0;
-    private int mTranslate = 0;
+    private float mViewWidth = 0;
+    private float mTranslate = 0;
     final private int UNITIME = 100;
 
-    private boolean needInitPaint;
-    private int incrementX = 0;
+    private boolean isUpdatedContent;
+    private float incrementX = 0;
 
     public void setScrollContent(int duration, String content) {
         this.mDuration = duration;
         this.setText(content);
 
+        isUpdatedContent = true;
         Log.d(TAG, "GradientText : duration = " + duration + ", content = " + content);
         invalidate();
     }
@@ -39,12 +40,10 @@ public class GradientTextView extends TextView {
 
     public GradientTextView(Context context) {
         super(context);
-        needInitPaint = true;
     }
 
     public GradientTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        needInitPaint = true;
     }
 
     private final String TAG = GradientTextView.class.getSimpleName() + "-wang";
@@ -55,30 +54,33 @@ public class GradientTextView extends TextView {
         Log.d(TAG, "onSizeChanged  :: w = " + w + ", h = " + h + ", oldw = " + oldw + ", oldh = " + oldh);
         Log.d(TAG, "onSizeChanged : getMeasuredWith = " + getMeasuredWidth());
 
-        if (needInitPaint){
-            needInitPaint = false;
-            mPaint = getPaint();
-            mLinearGradient = new LinearGradient(-mViewWidth, 0, 0, 0,
-                    new int[]{Color.YELLOW, Color.YELLOW, Color.WHITE},
-                    new float[]{0, 0.9f, 1}, Shader.TileMode.CLAMP);
+        mPaint = getPaint();
+        mLinearGradient = new LinearGradient(-mViewWidth, 0, 0, 0,
+                new int[]{Color.YELLOW, Color.YELLOW, Color.WHITE},
+                new float[]{0, 0.9f, 1}, Shader.TileMode.CLAMP);
 
-            mPaint.setShader(mLinearGradient);
-            mGradientMatrix = new Matrix();
-        }
+        mPaint.setShader(mLinearGradient);
+        mGradientMatrix = new Matrix();
 
-        mViewWidth = w ;
-        int times = mDuration / UNITIME;
-        if (times == 0) {
-            incrementX = mViewWidth;
-        } else {
-            incrementX = mViewWidth / times;
-        }
-        mTranslate = -mViewWidth;
+
+        mViewWidth = w;
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if (isUpdatedContent) {
+            isUpdatedContent = false;
+            int times = mDuration / UNITIME;
+            if (times == 0) {
+                incrementX = mViewWidth;
+            } else {
+                incrementX = mViewWidth / times;
+            }
+            mTranslate = -mViewWidth;
+        }
 
         if (mAnimating && mGradientMatrix != null) {
             mTranslate += incrementX;
