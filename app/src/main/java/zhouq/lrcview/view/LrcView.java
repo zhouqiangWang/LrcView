@@ -43,12 +43,12 @@ public class LrcView extends FrameLayout {
 
         highTextColor = a.getColor(R.styleable.LrcView_highlight_text_color,
                 Color.YELLOW);
-        highTextSize = (int) a.getDimension(R.styleable
+        highTextSize = a.getDimensionPixelSize(R.styleable
                 .LrcView_highlight_text_size, 40);
         otherTextColor = a.getColor(R.styleable.LrcView_otherline_text_color,
                 Color.WHITE);
-        otherTextSize = (int) a.getDimension(R.styleable
-                .LrcView_otherline_text_size,30);
+        otherTextSize = a.getDimensionPixelSize(R.styleable
+                .LrcView_otherline_text_size, 30);
 
         hasHighlightScroll = a.getBoolean(R.styleable.LrcView_highlight_scroll,
                 true);
@@ -71,6 +71,10 @@ public class LrcView extends FrameLayout {
 
     public void setSupportHighlightScroll(boolean supportHighlightScroll) {
         this.hasHighlightScroll = supportHighlightScroll;
+    }
+
+    public void setOnLrcClickListener(LrcScrollView.OnLrcClickListener onLrcClickListener) {
+        otherLrcView.setOnLrcClickListener(onLrcClickListener);
     }
 
     public void reset() {

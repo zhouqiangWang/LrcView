@@ -1,6 +1,8 @@
 package zhouq.lrcview;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -24,11 +27,11 @@ public class PlayerActivity extends Activity {
     private int duratoin;
 
     private LrcView lrcView;
+    private Fragment mLrcFragment;
     private SeekBar seekBar;
-    private final int SEEKBAR_MAX = 100;
     private Button playPauseBtn;
 
-    MediaPlayer mPlayer;
+    private MediaPlayer mPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +60,39 @@ public class PlayerActivity extends Activity {
         lrcView = (LrcView) findViewById(R.id.lrcview);
         lrcView.setLrcContent(duratoin, path);
         lrcView.setOnSeekToListener(lrcViewSeekToListener);
+        lrcView.setOnLrcClickListener(mLrcClickListener);
 
         seekBar = (SeekBar) findViewById(R.id.seekbar);
         seekBar.setMax(duratoin);
         seekBar.setOnSeekBarChangeListener(playerSeekbarListener);
 
         playPauseBtn = (Button) findViewById(R.id.play_pause_button);
-        playPauseBtn.setOnClickListener(playBtnClickListener);
+        playPauseBtn.setOnClickListener(mPlayPauseClickListener);
     }
 
-    private View.OnClickListener playBtnClickListener = new View.OnClickListener() {
+    private View.OnClickListener mPlayPauseClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
+        }
+    };
+
+    private LrcScrollView.OnLrcClickListener mLrcClickListener = new
+            LrcScrollView.OnLrcClickListener() {
+        @Override
+        public void onClick() {
+                mLrcFragment = getFragmentManager().findFragmentByTag
+                        ("LRC");
+                FragmentTransaction ft = getFragmentManager()
+                        .beginTransaction();
+                if (mLrcFragment == null){
+                    mLrcFragment = LrcFragment.newInstance();
+                }
+                if (mLrcFragment.isVisible()) {
+                    ft.remove(mLrcFragment).commit();
+                } else {
+                    ft.add(R.id.lrc_content,mLrcFragment,"LRC").commit();
+                }
         }
     };
 

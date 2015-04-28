@@ -58,6 +58,14 @@ public class LrcScrollView extends View {
      */
     private static final int DEFAULT_COLOR_FOR_OTHER_LRC = Color.WHITE;
     private float mCurFraction;
+    private OnLrcClickListener onLrcClickListener;
+    public void setOnLrcClickListener(OnLrcClickListener onLrcClickListener) {
+        this.onLrcClickListener = onLrcClickListener;
+    }
+
+    public interface OnLrcClickListener{
+        void onClick();
+    }
 
     public void setCurSizeForOtherLine(float mCurSizeForOtherLrc) {
         this.mCurSizeForOtherLrc = mCurSizeForOtherLrc;
@@ -315,9 +323,9 @@ public class LrcScrollView extends View {
             case MotionEvent.ACTION_CANCEL:
                 Log.d(TAG,"Action_UP ~~ canDrag = "+canDrag);
                 if (!canDrag) {
-//                        if(onLrcClickListener != null){
-//                            onLrcClickListener.onClick();
-//                        }
+                    if(onLrcClickListener != null){
+                        onLrcClickListener.onClick();
+                    }
                 } else {
                     if (onSeekToListener != null && mCurRow != -1) {
                         onSeekToListener.onSeekTo(mLrcRows.get(mCurRow)

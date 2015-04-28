@@ -28,11 +28,16 @@
 
     </LinearLayout>
 
-    <zhouq.lrcview.view.LrcView
-        android:id="@+id/lrcview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        LrcView:highlight_scroll="false"
-        android:layout_above="@id/controller">
-    </zhouq.lrcview.view.LrcView>
+    <FrameLayout android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+        android:id="@+id/lrc_content"
+                 android:layout_above="@id/controller">
+
+        <zhouq.lrcview.view.LrcView
+            android:id="@+id/lrcview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            LrcView:highlight_scroll="false" >
+        </zhouq.lrcview.view.LrcView>
+    </FrameLayout>
 </RelativeLayout>
